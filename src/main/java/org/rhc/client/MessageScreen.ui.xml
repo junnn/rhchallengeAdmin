@@ -1,0 +1,7 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+    <g:HTMLPanel>
+        <g:Label ui:field="messageLabel"/><br/>
+        <g:Hyperlink ui:field="indexLink" text="Click here to return to index"/>
+    </g:HTMLPanel>
+</ui:UiBinder>

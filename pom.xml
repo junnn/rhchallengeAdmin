@@ -14,8 +14,8 @@
     <!-- Convenience property to set the GWT version -->
     <gwtVersion>2.5.1</gwtVersion>
     <!-- GWT needs at least java 1.6 -->
-    <maven.compiler.source>1.6</maven.compiler.source>
-    <maven.compiler.target>1.6</maven.compiler.target>
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.7</maven.compiler.target>
   </properties>
 
   <dependencies>
@@ -56,6 +56,43 @@
       <classifier>sources</classifier>
       <scope>provided</scope>
     </dependency>
+      <dependency>
+          <groupId>org.hibernate</groupId>
+          <artifactId>hibernate-core</artifactId>
+          <version>4.2.3.Final</version>
+      </dependency>
+      <dependency>
+          <groupId>org.postgresql</groupId>
+          <artifactId>postgresql</artifactId>
+          <version>9.2-1002-jdbc4</version>
+      </dependency>
+      <dependency>
+          <groupId>org.mindrot</groupId>
+          <artifactId>jbcrypt</artifactId>
+          <version>0.3m</version>
+      </dependency>
+      <dependency>
+          <groupId>org.apache.commons</groupId>
+          <artifactId>commons-lang3</artifactId>
+          <version>3.1</version>
+      </dependency>
+      <dependency>
+          <groupId>org.apache.commons</groupId>
+          <artifactId>commons-email</artifactId>
+          <version>1.3.1</version>
+      </dependency>
+      <dependency>
+          <groupId>org.apache.shiro</groupId>
+          <artifactId>shiro-core</artifactId>
+          <version>1.2.2</version>
+      </dependency>
+      <dependency>
+          <groupId>org.apache.shiro</groupId>
+          <artifactId>shiro-web</artifactId>
+          <version>1.2.2</version>
+      </dependency>
+
+
   </dependencies>
   
   <build>
@@ -165,25 +202,6 @@
           </filesets>
         </configuration>
       </plugin>
-
-      <plugin>
-	<artifactId>maven-eclipse-plugin</artifactId>
-	<version>2.7</version>  <!--  Note 2.8 does not work with AspectJ aspect path -->
-	<configuration>
-          <downloadSources>true</downloadSources>
-          <downloadJavadocs>false</downloadJavadocs>
-          <wtpversion>2.0</wtpversion>
-          <additionalBuildcommands>
-            <buildCommand>
-              <name>com.google.gwt.eclipse.core.gwtProjectValidator</name>
-            </buildCommand>
-          </additionalBuildcommands>
-          <additionalProjectnatures>
-            <projectnature>com.google.gwt.eclipse.core.gwtNature</projectnature>
-          </additionalProjectnatures>
-	</configuration>
-      </plugin>
-
     </plugins>
   </build>
 </project>

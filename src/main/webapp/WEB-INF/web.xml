@@ -5,20 +5,51 @@
          version="2.5"
          xmlns="http://java.sun.com/xml/ns/javaee">
 
-  <!-- Servlets -->
-  <servlet>
-    <servlet-name>greetServlet</servlet-name>
-    <servlet-class>org.rhc.server.GreetingServiceImpl</servlet-class>
-  </servlet>
-  
-  <servlet-mapping>
-    <servlet-name>greetServlet</servlet-name>
-    <url-pattern>/rhchallengeadmin/greet</url-pattern>
-  </servlet-mapping>
-  
-  <!-- Default page to serve -->
-  <welcome-file-list>
-    <welcome-file>rhchallengeAdmin.html</welcome-file>
-  </welcome-file-list>
+    <!-- Servlets -->
+    <servlet>
+        <servlet-name>org.rhc.rhchallengeAdmin AdminServiceImpl</servlet-name>
+        <servlet-class>org.rhc.server.AdminServiceImpl</servlet-class>
+    </servlet>
 
+    <servlet-mapping>
+        <servlet-name>org.rhc.rhchallengeAdmin AdminServiceImpl</servlet-name>
+        <url-pattern>/rhchallengeAdmin/adminService</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>org.rhc.rhchallengeAdmin SearchServiceImpl</servlet-name>
+        <servlet-class>org.rhc.server.SearchServiceImpl</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>org.rhc.rhchallengeAdmin SearchServiceImpl</servlet-name>
+        <url-pattern>/rhchallengeAdmin/SearchService</url-pattern>
+    </servlet-mapping>
+
+
+
+
+    <!-- Default page to serve -->
+    <welcome-file-list>
+        <welcome-file>rhchallengeAdmin.html</welcome-file>
+    </welcome-file-list>
+
+    <!--Shiro Configuration-->
+    <listener>
+        <listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>
+    </listener>
+
+    <filter>
+        <filter-name>ShiroFilter</filter-name>
+        <filter-class>org.apache.shiro.web.servlet.ShiroFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>ShiroFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>INCLUDE</dispatcher>
+        <dispatcher>ERROR</dispatcher>
+    </filter-mapping>
 </web-app>
