@@ -15,4 +15,5 @@ import java.util.List;
 
 public interface SearchServiceAsync {
     void loadDB(String search, String field, AsyncCallback<List<Student>> async);
+    void displayDB(AsyncCallback<List<Student>> async);
 }

@@ -19,6 +19,7 @@ import java.util.List;
 public interface SearchService extends RemoteService{
 
     public List<Student> loadDB(String search, String field) throws IllegalArgumentException;
+    public List<Student> displayDB() throws IllegalArgumentException;
 
     public static class Util {
         private static final SearchServiceAsync Instance= (SearchServiceAsync) GWT.create(SearchService.class);

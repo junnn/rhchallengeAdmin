@@ -43,4 +43,26 @@ public class SearchServiceImpl extends RemoteServiceServlet implements SearchSer
             session.close();
         }
     }
+
+
+    public List<Student> displayDB() {
+        List<Student> studentList;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try {
+            session.beginTransaction();
+            Criteria criteria = session.createCriteria(Student.class);
+            studentList = criteria.list();
+
+            session.getTransaction().commit();
+            return studentList;
+
+
+        } catch (HibernateException e) {
+            log("Failed to retrieve profile information from the database", e);
+            throw new RuntimeException("Failed to retrieve profile information from the database");
+        }
+        finally{
+            session.close();
+        }
+    }
 }
