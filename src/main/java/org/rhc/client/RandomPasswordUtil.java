@@ -1,18 +1,19 @@
-package org.rhc.server;
+package org.rhc.client;
 
 /**
  * Created with IntelliJ IDEA.
  * User: Jun
- * Date: 1/8/13
- * Time: 10:00 AM
+ * Date: 5/8/13
+ * Time: 10:37 AM
  * To change this template use File | Settings | File Templates.
  */
+
+import org.rhc.server.SecurityUtil;
 
 import java.security.SecureRandom;
 import java.util.Random;
 
 public class RandomPasswordUtil {
-
     private static final Random RANDOM = new SecureRandom();
     /** Length of password. @see #generateRandomPassword() */
     public static final int PASSWORD_LENGTH = 10;
@@ -36,5 +37,5 @@ public class RandomPasswordUtil {
         }
         return pw;
     }
-}
 
+}

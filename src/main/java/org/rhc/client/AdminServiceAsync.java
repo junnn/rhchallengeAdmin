@@ -13,4 +13,7 @@ public interface AdminServiceAsync {
     void createStudent(String email, String password, String firstName, String lastName, String contact,
                        String country, String countryCode, String school, String lecturerFirstName, String lecturerLastName,
                        String lecturerEmail, String language, AsyncCallback<Boolean> async);
+
+    void setConfirmationStatus(String email, AsyncCallback<Boolean> async);
+    void deleteStudent(String email, AsyncCallback<Boolean> async);
 }

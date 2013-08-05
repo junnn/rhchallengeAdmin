@@ -33,7 +33,10 @@
         <g:item value="2">Chinese (Simplified)</g:item>
         <g:item value="3">Chinese (Traditional)</g:item>
     </g:ListBox><br/>
-        <g:Button ui:field="createButton" text="Create"/>
+        <g:Button ui:field="createButton" text="Create"/><br/>
+        <g:CheckBox ui:field="verifyUser" /><br/>
+        <g:Button ui:field="deleteButton" text="Delete"/><br/>
         <g:Label ui:field="errorLabel"/>
+        <g:Label ui:field="errorLabel2"/>
     </g:HTMLPanel>
 </ui:UiBinder>

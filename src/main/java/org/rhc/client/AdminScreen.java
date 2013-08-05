@@ -10,9 +10,9 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
-
-import java.math.BigInteger;
-import java.security.SecureRandom;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Label;
 
 public class AdminScreen extends Composite {
     interface AdminScreenUiBinder extends UiBinder<Widget, AdminScreen> {
@@ -35,7 +35,10 @@ public class AdminScreen extends Composite {
     @UiField TextBox lecturerEmailField;
     @UiField ListBox languageField;
     @UiField Button createButton;
+    @UiField Button deleteButton;
     @UiField Label errorLabel;
+    @UiField Label errorLabel2;
+    @UiField CheckBox verifyUser;
 
 
     private AdminServiceAsync adminService = null;
@@ -95,11 +98,18 @@ public class AdminScreen extends Composite {
         }
     }
 
+    @UiHandler("deleteButton")
+    public void handleDeleteButtonClick(ClickEvent event) {
+        deleteStudent();
+    }
+
 
     private void createStudent() {
 
+
         String email = emailField.getText();
         String password = passwordField.getText();
+        String confirmPassword = confirmPasswordField.getText();
         String firstName = firstNameField.getText();
         String lastName = lastNameField.getText();
         String contact = contactField.getText();
@@ -110,6 +120,24 @@ public class AdminScreen extends Composite {
         String lecturerLastName = lecturerLastNameField.getText();
         String lecturerEmail = lecturerEmailField.getText();
         String language = languageField.getItemText(languageField.getSelectedIndex());
+
+        //Password Validation
+        if(password.isEmpty()){
+            String randomPw = RandomPasswordUtil.generateRandomPassword();
+            passwordField.setText(randomPw);
+            confirmPasswordField.setText(randomPw);
+        }
+        else{
+
+            if(confirmPassword.isEmpty()){
+                errorLabel.setText("Please enter the confirmation password!");
+
+            }
+            else if (!password.equals(confirmPassword)){
+                errorLabel.setText("Passwords do not match. Please re-enter passwords again");
+            }
+        }
+
 
         adminService = AdminService.Util.getInstance();
 
@@ -135,6 +163,38 @@ public class AdminScreen extends Composite {
                 }
             }
         });
-    }
 
+        //Validate User
+
+        while(verifyUser.getValue())
+        {
+            adminService = AdminService.Util.getInstance();
+            adminService.setConfirmationStatus(email, new AsyncCallback<Boolean>() {
+                @Override
+                public void onFailure(Throwable caught) {
+                    errorLabel2.setText("An unexpected error has occurred, please try again later!");
+                }
+
+                @Override
+                public void onSuccess(Boolean result) {
+                    errorLabel2.setText("User verified");
+                }
+            });
+
+        }
+    }
+    private void deleteStudent() {
+        String email = "sdd432";
+        adminService = AdminService.Util.getInstance();
+        adminService.deleteStudent(email, new AsyncCallback<Boolean>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                errorLabel2.setText("An unexpected error has occurred, please try again later!");
+            }
+            @Override
+            public void onSuccess(Boolean result) {
+                errorLabel.setText("User Deleted Successfully!");
+            }
+        });
+    }
 }

@@ -15,8 +15,8 @@ public class EntryPage implements EntryPoint {
     @Override
     public void onModuleLoad(){
 
-        ContentPage.INSTANCE.setContent(new SearchScreen());
-        //ContentPage.INSTANCE.setContent(new AdminScreen());
+        //ContentPage.INSTANCE.setContent(new SearchScreen());
+        ContentPage.INSTANCE.setContent(new AdminScreen());
 
 
     }

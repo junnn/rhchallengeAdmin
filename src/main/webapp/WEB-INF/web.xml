@@ -13,7 +13,7 @@
 
     <servlet-mapping>
         <servlet-name>org.rhc.rhchallengeAdmin AdminServiceImpl</servlet-name>
-        <url-pattern>/rhchallengeAdmin/adminService</url-pattern>
+        <url-pattern>/rhchallengeAdmin/AdminService</url-pattern>
     </servlet-mapping>
 
     <servlet>

@@ -25,6 +25,6 @@
     <!-- Specify the paths for translatable code                    -->
     <source path='client'/>
     <source path='shared'/>
-    <servlet path="/adminService" class="org.rhc.server.AdminServiceImpl"/>
+    <servlet path="/AdminService" class="org.rhc.server.AdminServiceImpl"/>
     <servlet path="/SearchService" class="org.rhc.server.SearchServiceImpl"/>
 </module>

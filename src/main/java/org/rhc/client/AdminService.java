@@ -11,12 +11,16 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.google.gwt.core.client.GWT;
 
-@RemoteServiceRelativePath("adminService")
+@RemoteServiceRelativePath("AdminService")
 public interface AdminService extends RemoteService {
 
     public Boolean createStudent(String email, String password, String firstName, String lastName, String contact,
                                  String country, String countryCode, String school, String lecturerFirstName, String lecturerLastName,
                                  String lecturerEmail, String language) throws IllegalArgumentException;
+
+    public boolean setConfirmationStatus(String email) throws IllegalArgumentException;
+
+    public boolean deleteStudent(String email) throws IllegalArgumentException;
 
     public static class Util {
         private static final AdminServiceAsync Instance = (AdminServiceAsync) GWT.create(AdminService.class);
