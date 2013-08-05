@@ -28,6 +28,7 @@ public class SearchServiceImpl extends RemoteServiceServlet implements SearchSer
             session.beginTransaction();
             Criteria criteria = session.createCriteria(Student.class);
             criteria.add(Restrictions.like(field,"%" + search + "%").ignoreCase());
+            //criteria.add(Restrictions.eq("status", Boolean.FALSE));   //thinking how to use this
 
             studentList = criteria.list();
 

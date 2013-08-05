@@ -8,6 +8,7 @@ package org.rhc.client;
  * To change this template use File | Settings | File Templates.
  */
 
+import au.com.bytecode.opencsv.CSVWriter;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -23,6 +24,8 @@ import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
 import org.rhc.shared.Student;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 
 public class SearchScreen extends Composite {
@@ -44,37 +47,10 @@ public class SearchScreen extends Composite {
     public SearchScreen() {
         initWidget(UiBinder.createAndBindUi(this));
         initTable();
+        displayDB();
+
     }
 
-    @UiHandler("searchButton")
-    public void handleOnClick(ClickEvent event){
-        resultListBox.clear();
-        search = searchTextBox.getText();
-        field = fieldListBox.getItemText(fieldListBox.getSelectedIndex());
-
-        if (field.equals("Email")){
-            field = "email";
-        }
-        if (field.equals("Country")){
-            field = "country";
-        }
-
-        searchService = SearchService.Util.getInstance();
-        searchService.loadDB(search, field, new AsyncCallback<List<Student>>(){
-            @Override
-            public void onFailure(Throwable throwable) {
-                resultListBox.addItem("Fail");
-            }
-
-            @Override
-            public void onSuccess(List <Student> student) {
-                for(int i=0; i< student.size(); i++){
-                    resultListBox.addItem(student.get(i).getEmail());
-                }
-            }
-        });
-        searchTextBox.selectAll();
-    }
 
     public void initTable(){
         cellTable.setKeyboardSelectionPolicy(HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.ENABLED);
@@ -85,6 +61,7 @@ public class SearchScreen extends Composite {
                 return student.getEmail();
             }
         };
+        cellTable.addColumn(emailColumn, "Email Address");
 
         TextColumn<Student> fnColumn = new TextColumn<Student>() {
             @Override
@@ -100,7 +77,7 @@ public class SearchScreen extends Composite {
                 return student.getLastName();
             }
         };
-        cellTable.addColumn(lnColumn, "First Name");
+        cellTable.addColumn(lnColumn, "Last Name");
 
         TextColumn<Student> countryColumn = new TextColumn<Student>() {
             @Override
@@ -113,7 +90,7 @@ public class SearchScreen extends Composite {
         TextColumn<Student> ccColumn = new TextColumn<Student>() {
             @Override
             public String getValue(Student student) {
-                return student.getLastName();
+                return student.getCountryCode();
             }
         };
         cellTable.addColumn(ccColumn, "Country Code");
@@ -124,7 +101,7 @@ public class SearchScreen extends Composite {
                 return student.getContact();
             }
         };
-        cellTable.addColumn(contactColumn, "Contact");
+        cellTable.addColumn(contactColumn, "Contact No.");
 
         TextColumn<Student> schoolColumn = new TextColumn<Student>() {
             @Override
@@ -140,7 +117,7 @@ public class SearchScreen extends Composite {
                 return student.getLecturerFirstName();
             }
         };
-        cellTable.addColumn(lecFnColumn, "Lecturer FN");
+        cellTable.addColumn(lecFnColumn, "Lecturer's First Name");
 
         TextColumn<Student> lecLnColumn = new TextColumn<Student>() {
             @Override
@@ -148,16 +125,16 @@ public class SearchScreen extends Composite {
                 return student.getLecturerLastName();
             }
         };
-        cellTable.addColumn(lecLnColumn, "Lecturer LN");
+        cellTable.addColumn(lecLnColumn, "Lecturer's Last Name");
 
 
         TextColumn<Student> lecEmailColumn = new TextColumn<Student>() {
             @Override
             public String getValue(Student student) {
-                return student.getLecturerFirstName();
+                return student.getLecturerEmail();
             }
         };
-        cellTable.addColumn(lecEmailColumn, "Lecturer Email");
+        cellTable.addColumn(lecEmailColumn, "Lecturer's Email");
 
 
         TextColumn<Student> verifiedColumn = new TextColumn<Student>() {
@@ -166,7 +143,7 @@ public class SearchScreen extends Composite {
                 return student.getVerified().toString();
             }
         };
-        cellTable.addColumn(verifiedColumn, "Verified");
+        cellTable.addColumn(verifiedColumn, "Verification Status");
 
         TextColumn<Student> statusColumn = new TextColumn<Student>() {
             @Override
@@ -174,8 +151,19 @@ public class SearchScreen extends Composite {
                 return student.getStatus().toString();
             }
         };
-        cellTable.addColumn(statusColumn, "Account Activated");
+        cellTable.addColumn(statusColumn, "Account Status");
 
+        SimplePager pager = new SimplePager();
+        pager.setDisplay(cellTable);
+
+        VerticalPanel vp = new VerticalPanel();
+        vp.add(cellTable);
+        vp.add(pager);
+
+        RootPanel.get().add(vp);
+    }
+
+    public void displayDB(){
         AsyncDataProvider<Student> provider = new AsyncDataProvider<Student>() {
             @Override
             protected void onRangeChanged(HasData<Student> students) {
@@ -191,22 +179,83 @@ public class SearchScreen extends Composite {
                     @Override
                     public void onSuccess(List<Student> students){
                         updateRowData(start, students);
-                }
-            });
+
+                    }
+                });
+            }
+        };
+        provider.addDataDisplay(cellTable);
+    }
+
+    @UiHandler("searchButton")
+    public void handleOnClick(ClickEvent event){
+
+        search = searchTextBox.getText();
+        field = fieldListBox.getItemText(fieldListBox.getSelectedIndex());
+
+        if (field.equals("Email")){
+            field = "email";
         }
+        if (field.equals("First Name")){
+            field = "firstName";
+        }
+        if (field.equals("Last Name")){
+            field = "lastName";
+        }
+        if (field.equals("Contact No.")){
+            field = "contact";
+        }
+        if (field.equals("Country")){
+            field = "country";
+        }
+        if (field.equals("Country Code")){
+            field = "countryCode";
+        }
+        if (field.equals("School")){
+            field = "school";
+        }
+        if (field.equals("Lecturer's First Name")){
+            field = "lecturerFirstName";
+        }
+        if (field.equals("Lecturer's Last Name")){
+            field = "lecturerLastName";
+        }
+        if (field.equals("Lecturer's Email")){
+            field = "lecturerEmail";
+        }
+        if (field.equals("Verification Status")){
+            field = "verified";
+        }
+        if (field.equals("Account Status")){
+            field = "status";
+        }
+
+
+        AsyncDataProvider<Student> provider = new AsyncDataProvider<Student>() {
+            @Override
+            protected void onRangeChanged(HasData<Student> students) {
+                final int start =  students.getVisibleRange().getStart();
+                int length = students.getVisibleRange().getLength();
+                searchService = SearchService.Util.getInstance();
+                searchService.loadDB(search, field, new AsyncCallback<List<Student>>() {
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                        resultListBox.addItem("Fail");
+                        resultListBox.addItem(field);
+                    }
+
+                    @Override
+                    public void onSuccess(List<Student> students){
+                        updateRowData(start, students);
+                        updateRowCount(students.size(), true);
+                    }
+                });
+            }
         };
         provider.addDataDisplay(cellTable);
 
-        SimplePager pager = new SimplePager();
-        pager.setDisplay(cellTable);
-
-        VerticalPanel vp = new VerticalPanel();
-        vp.add(cellTable);
-        vp.add(pager);
-
-        RootPanel.get().add(vp);
-
     }
+
 }
 
 
