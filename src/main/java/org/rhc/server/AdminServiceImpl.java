@@ -18,6 +18,7 @@ import org.rhc.shared.Student;
 import org.hibernate.Session;
 import org.hibernate.exception.ConstraintViolationException;
 
+import java.security.SecureRandom;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -64,22 +65,20 @@ public class AdminServiceImpl extends RemoteServiceServlet implements AdminServi
             session.getTransaction().commit();
             return true;
 
-        } catch (ExceptionInInitializerError e) {
-            log("Error with initializing hibernate session.", e);
-            throw e;
         } catch (ConstraintViolationException e) {
             log("Failed to add student due to key constraints.", e);
+            session.getTransaction().rollback();
             return false;
-        }
-        finally{
-            session.close();
+        } catch (HibernateException e) {
+            log("Error with initializing hibernate session.", e);
+            session.getTransaction().rollback();
+            return false;
         }
     }
     @Override
     public boolean setConfirmationStatus(String email) throws IllegalArgumentException {
-        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         try {
-
+            Session session = HibernateUtil.getSessionFactory().getCurrentSession();
             session.beginTransaction();
 
             Criteria criteria = session.createCriteria(Student.class);
@@ -91,7 +90,7 @@ public class AdminServiceImpl extends RemoteServiceServlet implements AdminServi
             int[] questionsArray = ArrayUtils.toPrimitive(arr);
 
             student.setQuestions(questionsArray);
-            student.setVerified(true);
+            student.setVerified(Boolean.TRUE);
 
             session.update(student);
             session.getTransaction().commit();
@@ -101,10 +100,6 @@ public class AdminServiceImpl extends RemoteServiceServlet implements AdminServi
             log("Failed to set confirmation status to true", e);
             return false;
         }
-        finally{
-            session.close();
-        }
-
     }
 
     @Override
@@ -133,7 +128,6 @@ public class AdminServiceImpl extends RemoteServiceServlet implements AdminServi
 
 
     private Set<Integer> randomQuestions() {
-
         Random rand = new Random();
         int max;
         int min;
@@ -144,26 +138,39 @@ public class AdminServiceImpl extends RemoteServiceServlet implements AdminServi
         int levelThree = 29;
 
         while(listOfQuestions.size()<levelOne) {
-
             max = 230;
             min = 1;
             listOfQuestions.add(rand.nextInt(max - min + 1) + min);
         }
-
         while(listOfQuestions.size()<levelOne + levelTwo) {
             max = 406;
             min = 231;
             listOfQuestions.add(rand.nextInt(max - min + 1) + min);
         }
-
         while(listOfQuestions.size()<levelOne + levelTwo + levelThree) {
             max = 500;
             min = 407;
             listOfQuestions.add(rand.nextInt(max - min + 1) + min);
         }
-
         return listOfQuestions;
     }
+
+    public String generateRandomPassword(){
+        String letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890+@";
+
+        String pw = "";
+        for (int i=0; i<PASSWORD_LENGTH; i++)
+        {
+            int index = (int)(RANDOM.nextDouble()*letters.length());
+            pw += letters.substring(index, index+1);
+        }
+        return pw;
+
+    }
+    private static final Random RANDOM = new SecureRandom();
+    public static final int PASSWORD_LENGTH = 10;
+
+
 
 
 

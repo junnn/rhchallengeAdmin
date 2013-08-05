@@ -38,6 +38,7 @@ public class AdminScreen extends Composite {
     @UiField Button deleteButton;
     @UiField Label errorLabel;
     @UiField Label errorLabel2;
+    @UiField Label errorLabel3;
     @UiField CheckBox verifyUser;
 
 
@@ -45,6 +46,8 @@ public class AdminScreen extends Composite {
 
     public AdminScreen(){
         initWidget(UiBinder.createAndBindUi(this));
+        verifyUser.setChecked(true);
+
     }
 
     @UiHandler("countryField")
@@ -106,7 +109,6 @@ public class AdminScreen extends Composite {
 
     private void createStudent() {
 
-
         String email = emailField.getText();
         String password = passwordField.getText();
         String confirmPassword = confirmPasswordField.getText();
@@ -123,9 +125,20 @@ public class AdminScreen extends Composite {
 
         //Password Validation
         if(password.isEmpty()){
-            String randomPw = RandomPasswordUtil.generateRandomPassword();
-            passwordField.setText(randomPw);
-            confirmPasswordField.setText(randomPw);
+            adminService = AdminService.Util.getInstance();
+            adminService.generateRandomPassword(new AsyncCallback<String>() {
+                @Override
+                public void onFailure(Throwable throwable) {
+                    errorLabel3.setText("Password could not be generated");
+                }
+
+                @Override
+                public void onSuccess(String s) {
+                    passwordField.setText(s);
+                    confirmPasswordField.setText(s);
+                }
+            });
+
         }
         else{
 
@@ -154,8 +167,10 @@ public class AdminScreen extends Composite {
 
             @Override
             public void onSuccess(Boolean bool) {
-                if(bool)
+                if(bool){
                     errorLabel.setText("User added successfully!");
+                    createButton.setEnabled(true);
+                }
 
                 else {
                     errorLabel.setText("Your registration is a failure, please double check your inputs!");
@@ -166,7 +181,7 @@ public class AdminScreen extends Composite {
 
         //Validate User
 
-        while(verifyUser.getValue())
+        while(verifyUser.getValue() == true)
         {
             adminService = AdminService.Util.getInstance();
             adminService.setConfirmationStatus(email, new AsyncCallback<Boolean>() {
@@ -178,9 +193,9 @@ public class AdminScreen extends Composite {
                 @Override
                 public void onSuccess(Boolean result) {
                     errorLabel2.setText("User verified");
+                    verifyUser.setValue(false);
                 }
             });
-
         }
     }
     private void deleteStudent() {

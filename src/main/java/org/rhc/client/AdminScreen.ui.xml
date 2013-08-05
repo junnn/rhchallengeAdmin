@@ -36,7 +36,8 @@
         <g:Button ui:field="createButton" text="Create"/><br/>
         <g:CheckBox ui:field="verifyUser" /><br/>
         <g:Button ui:field="deleteButton" text="Delete"/><br/>
-        <g:Label ui:field="errorLabel"/>
-        <g:Label ui:field="errorLabel2"/>
+        <g:Label ui:field="errorLabel"/><br/>
+        <g:Label ui:field="errorLabel2"/><br/>
+        <g:Label ui:field="errorLabel3"/><br/>
     </g:HTMLPanel>
 </ui:UiBinder>

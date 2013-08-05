@@ -22,6 +22,8 @@ public interface AdminService extends RemoteService {
 
     public boolean deleteStudent(String email) throws IllegalArgumentException;
 
+    public String generateRandomPassword() throws IllegalArgumentException;
+
     public static class Util {
         private static final AdminServiceAsync Instance = (AdminServiceAsync) GWT.create(AdminService.class);
 
