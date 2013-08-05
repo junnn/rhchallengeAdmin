@@ -10,11 +10,18 @@ package org.rhc.client;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.google.gwt.core.client.GWT;
+import org.rhc.shared.Student;
+
+import java.util.List;
 
 @RemoteServiceRelativePath("AdminService")
 public interface AdminService extends RemoteService {
 
     public Boolean createStudent(String email, String password, String firstName, String lastName, String contact,
+                                 String country, String countryCode, String school, String lecturerFirstName, String lecturerLastName,
+                                 String lecturerEmail, String language) throws IllegalArgumentException;
+
+    public Boolean createAndVerifyStudent(String email, String password, String firstName, String lastName, String contact,
                                  String country, String countryCode, String school, String lecturerFirstName, String lecturerLastName,
                                  String lecturerEmail, String language) throws IllegalArgumentException;
 

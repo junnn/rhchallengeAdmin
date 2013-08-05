@@ -20,10 +20,16 @@ import org.hibernate.exception.ConstraintViolationException;
 
 import java.security.SecureRandom;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
 public class AdminServiceImpl extends RemoteServiceServlet implements AdminService{
+
+    private static final Random RANDOM = new SecureRandom();
+    public static final int PASSWORD_LENGTH = 10;
+
+
     @Override
     public Boolean createStudent(String email, String password, String firstName, String lastName,
                                  String contact, String country, String countryCode, String school,
@@ -77,8 +83,9 @@ public class AdminServiceImpl extends RemoteServiceServlet implements AdminServi
     }
     @Override
     public boolean setConfirmationStatus(String email) throws IllegalArgumentException {
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         try {
-            Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+
             session.beginTransaction();
 
             Criteria criteria = session.createCriteria(Student.class);
@@ -90,7 +97,7 @@ public class AdminServiceImpl extends RemoteServiceServlet implements AdminServi
             int[] questionsArray = ArrayUtils.toPrimitive(arr);
 
             student.setQuestions(questionsArray);
-            student.setVerified(Boolean.TRUE);
+            student.setVerified(true);
 
             session.update(student);
             session.getTransaction().commit();
@@ -120,9 +127,6 @@ public class AdminServiceImpl extends RemoteServiceServlet implements AdminServi
         catch (HibernateException e){
             log("Failed to delete user", e);
             return false;
-        }
-        finally {
-            session.close();
         }
     }
 
@@ -165,15 +169,65 @@ public class AdminServiceImpl extends RemoteServiceServlet implements AdminServi
             pw += letters.substring(index, index+1);
         }
         return pw;
-
     }
-    private static final Random RANDOM = new SecureRandom();
-    public static final int PASSWORD_LENGTH = 10;
 
 
+    @Override
+    public Boolean createAndVerifyStudent(String email, String password, String firstName, String lastName,
+                                 String contact, String country, String countryCode, String school,
+                                 String lecturerFirstName, String lecturerLastName, String lecturerEmail,
+                                 String language) throws IllegalArgumentException {
 
+        email = SecurityUtil.escapeInput(email);
+        firstName = SecurityUtil.escapeInput(firstName);
+        lastName = SecurityUtil.escapeInput(lastName);
+        contact = SecurityUtil.escapeInput(contact);
+        country = SecurityUtil.escapeInput(country);
+        countryCode = SecurityUtil.escapeInput(countryCode);
+        school = SecurityUtil.escapeInput(school);
+        lecturerFirstName = SecurityUtil.escapeInput(lecturerFirstName);
+        lecturerLastName = SecurityUtil.escapeInput(lecturerLastName);
+        lecturerEmail = SecurityUtil.escapeInput(lecturerEmail);
+        language = SecurityUtil.escapeInput(language);
 
+        password = SecurityUtil.hashPassword(password);
 
+        Student student = new Student();
+        student.setEmail(email);
+        student.setPassword(password);
+        student.setFirstName(firstName);
+        student.setLastName(lastName);
+        student.setContact(contact);
+        student.setCountry(country);
+        student.setCountryCode(countryCode);
+        student.setSchool(school);
+        student.setLecturerFirstName(lecturerFirstName);
+        student.setLecturerLastName(lecturerLastName);
+        student.setLecturerEmail(lecturerEmail);
+        student.setLanguage(language);
+        student.setVerified(true);
 
+        Set<Integer> questions = randomQuestions();
+        Integer[] arr = questions.toArray(new Integer[questions.size()]);
+        int[] questionsArray = ArrayUtils.toPrimitive(arr);
 
+        student.setQuestions(questionsArray);
+
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        try {
+            session.beginTransaction();
+            session.save(student);
+            session.getTransaction().commit();
+            return true;
+
+        } catch (ConstraintViolationException e) {
+            log("Failed to add student due to key constraints.", e);
+            session.getTransaction().rollback();
+            return false;
+        } catch (HibernateException e) {
+            log("Error with initializing hibernate session.", e);
+            session.getTransaction().rollback();
+            return false;
+        }
+    }
 }

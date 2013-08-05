@@ -46,8 +46,7 @@ public class AdminScreen extends Composite {
 
     public AdminScreen(){
         initWidget(UiBinder.createAndBindUi(this));
-        verifyUser.setChecked(true);
-
+        schoolField.setText(verifyUser.getValue().toString());
     }
 
     @UiHandler("countryField")
@@ -156,6 +155,8 @@ public class AdminScreen extends Composite {
 
         createButton.setEnabled(false);
 
+        if (verifyUser.getValue().toString() == "false"){
+
         adminService.createStudent(email, password, firstName, lastName, contact,
                 country, countryCode, school, lecturerFirstName, lecturerLastName,
                 lecturerEmail, language, new AsyncCallback<Boolean>() {
@@ -178,26 +179,33 @@ public class AdminScreen extends Composite {
                 }
             }
         });
-
-        //Validate User
-
-        while(verifyUser.getValue() == true)
-        {
-            adminService = AdminService.Util.getInstance();
-            adminService.setConfirmationStatus(email, new AsyncCallback<Boolean>() {
+        }
+        else{
+            adminService.createAndVerifyStudent(email, password, firstName, lastName, contact,
+                    country, countryCode, school, lecturerFirstName, lecturerLastName,
+                    lecturerEmail, language, new AsyncCallback<Boolean>() {
                 @Override
-                public void onFailure(Throwable caught) {
-                    errorLabel2.setText("An unexpected error has occurred, please try again later!");
+                public void onFailure(Throwable throwable) {
+                    errorLabel.setText("An unexpected error has occurred, please try again later!");
+                    createButton.setEnabled(true);
                 }
 
                 @Override
-                public void onSuccess(Boolean result) {
-                    errorLabel2.setText("User verified");
-                    verifyUser.setValue(false);
+                public void onSuccess(Boolean aBoolean) {
+                    if(aBoolean){
+                        errorLabel.setText("User added & verified successfully!");
+                        createButton.setEnabled(true);
+                    }
+
+                    else {
+                        errorLabel.setText("Your registration is a failure, please double check your inputs!");
+                        createButton.setEnabled(true);
+                    }
                 }
             });
         }
     }
+
     private void deleteStudent() {
         String email = "sdd432";
         adminService = AdminService.Util.getInstance();
