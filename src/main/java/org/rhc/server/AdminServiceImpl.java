@@ -14,13 +14,13 @@ import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.criterion.Restrictions;
 import org.rhc.client.AdminService;
+import org.rhc.shared.ConfirmationTokens;
 import org.rhc.shared.Student;
 import org.hibernate.Session;
 import org.hibernate.exception.ConstraintViolationException;
 
 import java.security.SecureRandom;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
@@ -64,22 +64,55 @@ public class AdminServiceImpl extends RemoteServiceServlet implements AdminServi
         student.setLecturerEmail(lecturerEmail);
         student.setLanguage(language);
 
+        class SendConfirmationEmail implements Runnable {
+            String email;
+
+            SendConfirmationEmail(String email) {
+                this.email = email;
+            }
+
+            @Override
+            public void run() {
+
+                ConfirmationTokens token = new ConfirmationTokens();
+                token.setToken(EmailUtil.generateToken(32));
+                token.setEmail(email);
+                EmailUtil.sendEmail("Confirmation of account",
+                        "<html>Click here to confirm your account: " + "http://register-ayrx.rhcloud.com/register/?confirmToken=" + token.getToken() + "</html>",
+                        "Your client does not support HTML messages, your token is " + token.getToken(),
+                        email);
+
+                Session currentSession = HibernateUtil.getSessionFactory().getCurrentSession();
+                currentSession.beginTransaction();
+                currentSession.save(token);
+                currentSession.getTransaction().commit();
+            }
+        }
+
+        /**
+         * Opens a session using Hibernate and saves the Student object.
+         * Calls the SendConfirmationEmail runnable if the commit is
+         * successful.
+         */
+
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         try {
             session.beginTransaction();
             session.save(student);
             session.getTransaction().commit();
-            return true;
 
+            Thread t = new Thread(new SendConfirmationEmail(email));
+            t.start();
+
+            return true;
         } catch (ConstraintViolationException e) {
-            log("Failed to add student due to key constraints.", e);
             session.getTransaction().rollback();
             return false;
         } catch (HibernateException e) {
-            log("Error with initializing hibernate session.", e);
             session.getTransaction().rollback();
             return false;
         }
+
     }
     @Override
     public boolean setConfirmationStatus(String email) throws IllegalArgumentException {
@@ -160,7 +193,7 @@ public class AdminServiceImpl extends RemoteServiceServlet implements AdminServi
     }
 
     public String generateRandomPassword(){
-        String letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890+@";
+        String letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 
         String pw = "";
         for (int i=0; i<PASSWORD_LENGTH; i++)
@@ -230,4 +263,7 @@ public class AdminServiceImpl extends RemoteServiceServlet implements AdminServi
             return false;
         }
     }
+
+
+
 }

@@ -3,8 +3,9 @@
     <g:HTMLPanel>
         <h1>Admin: Create User Page</h1>
         Email Address: <g:TextBox ui:field="emailField"/><br/>
-        Password: <g:PasswordTextBox ui:field="passwordField"/><br/>
-        Confirm Password: <g:PasswordTextBox ui:field="confirmPasswordField"/><br/>
+        Password: <g:TextBox ui:field="passwordField"/>
+        <g:Button ui:field="generatePasswordButton" text="Generate Password"/><br/>
+        Confirm Password: <g:TextBox ui:field="confirmPasswordField"/><br/>
         First Name: <g:TextBox ui:field="firstNameField"/><br/>
         Last Name: <g:TextBox ui:field="lastNameField"/><br/>
         Contact: <g:TextBox ui:field="contactField"/><br/>
@@ -34,7 +35,7 @@
         <g:item value="3">Chinese (Traditional)</g:item>
     </g:ListBox><br/>
         <g:Button ui:field="createButton" text="Create"/><br/>
-        <g:CheckBox ui:field="verifyUser" /><br/>
+        Set Verified <g:CheckBox ui:field="verifyUser" /><br/>
         <g:Button ui:field="deleteButton" text="Delete"/><br/>
         <g:Label ui:field="errorLabel"/><br/>
         <g:Label ui:field="errorLabel2"/><br/>

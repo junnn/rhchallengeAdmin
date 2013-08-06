@@ -13,5 +13,6 @@
         <property name="connection.username">rhc2013</property>
         <property name="connection.password">rhcSQL@2013</property>
         <mapping resource="Student.hbm.xml" />
+        <mapping resource="ConfirmationTokens.hbm.xml"/>
     </session-factory>
 </hibernate-configuration>

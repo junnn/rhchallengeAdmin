@@ -22,8 +22,8 @@ public class AdminScreen extends Composite {
     private static AdminScreenUiBinder UiBinder = GWT.create(AdminScreenUiBinder.class);
 
     @UiField TextBox emailField;
-    @UiField PasswordTextBox passwordField;
-    @UiField PasswordTextBox confirmPasswordField;
+    @UiField TextBox passwordField;
+    @UiField TextBox confirmPasswordField;
     @UiField TextBox firstNameField;
     @UiField TextBox lastNameField;
     @UiField TextBox contactField;
@@ -40,13 +40,13 @@ public class AdminScreen extends Composite {
     @UiField Label errorLabel2;
     @UiField Label errorLabel3;
     @UiField CheckBox verifyUser;
+    @UiField Button generatePasswordButton;
 
 
     private AdminServiceAsync adminService = null;
 
     public AdminScreen(){
         initWidget(UiBinder.createAndBindUi(this));
-        schoolField.setText(verifyUser.getValue().toString());
     }
 
     @UiHandler("countryField")
@@ -122,35 +122,6 @@ public class AdminScreen extends Composite {
         String lecturerEmail = lecturerEmailField.getText();
         String language = languageField.getItemText(languageField.getSelectedIndex());
 
-        //Password Validation
-        if(password.isEmpty()){
-            adminService = AdminService.Util.getInstance();
-            adminService.generateRandomPassword(new AsyncCallback<String>() {
-                @Override
-                public void onFailure(Throwable throwable) {
-                    errorLabel3.setText("Password could not be generated");
-                }
-
-                @Override
-                public void onSuccess(String s) {
-                    passwordField.setText(s);
-                    confirmPasswordField.setText(s);
-                }
-            });
-
-        }
-        else{
-
-            if(confirmPassword.isEmpty()){
-                errorLabel.setText("Please enter the confirmation password!");
-
-            }
-            else if (!password.equals(confirmPassword)){
-                errorLabel.setText("Passwords do not match. Please re-enter passwords again");
-            }
-        }
-
-
         adminService = AdminService.Util.getInstance();
 
         createButton.setEnabled(false);
@@ -204,6 +175,22 @@ public class AdminScreen extends Composite {
                 }
             });
         }
+    }
+    @UiHandler("generatePasswordButton")
+    public void handleGeneratePasswordButton(ClickEvent event){
+        adminService = AdminService.Util.getInstance();
+        adminService.generateRandomPassword(new AsyncCallback<String>() {
+            @Override
+            public void onFailure(Throwable throwable) {
+                errorLabel3.setText("Password could not be generated");
+            }
+
+            @Override
+            public void onSuccess(String s) {
+                passwordField.setText(s);
+                confirmPasswordField.setText(s);
+            }
+        });
     }
 
     private void deleteStudent() {
