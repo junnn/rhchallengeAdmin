@@ -43,6 +43,7 @@ public class AdminScreen extends Composite {
     @UiField Button generatePasswordButton;
 
 
+
     private AdminServiceAsync adminService = null;
 
     public AdminScreen(){

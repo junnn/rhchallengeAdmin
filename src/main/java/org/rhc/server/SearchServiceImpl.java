@@ -28,7 +28,6 @@ public class SearchServiceImpl extends RemoteServiceServlet implements SearchSer
             session.beginTransaction();
             Criteria criteria = session.createCriteria(Student.class);
             criteria.add(Restrictions.like(field,"%" + search + "%").ignoreCase());
-            //criteria.add(Restrictions.eq("status", Boolean.FALSE));   //thinking how to use this
 
             studentList = criteria.list();
 
@@ -45,7 +44,6 @@ public class SearchServiceImpl extends RemoteServiceServlet implements SearchSer
         }
     }
 
-
     public List<Student> displayDB() {
         List<Student> studentList;
         Session session = HibernateUtil.getSessionFactory().openSession();
@@ -57,12 +55,75 @@ public class SearchServiceImpl extends RemoteServiceServlet implements SearchSer
             session.getTransaction().commit();
             return studentList;
 
-
         } catch (HibernateException e) {
             log("Failed to retrieve profile information from the database", e);
             throw new RuntimeException("Failed to retrieve profile information from the database");
         }
         finally{
+            session.close();
+        }
+    }
+
+    public Boolean updateEmail(String email, String newEmail) throws IllegalArgumentException {
+
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try {
+            session.beginTransaction();
+
+            Criteria criteria = session.createCriteria(Student.class);
+            criteria.add(Restrictions.eq("email", email));
+            Student student = (Student)criteria.uniqueResult();
+
+            student.setEmail(newEmail);
+
+            session.update(student);
+            session.getTransaction().commit();
+
+            return true;
+        } catch (HibernateException e) {
+            log("Profile update failed", e);
+            return false;
+        }
+        finally {
+            session.close();
+        }
+    }
+
+    public Boolean updateProfileData(Student studentRow) throws IllegalArgumentException {
+
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try {
+            session.beginTransaction();
+
+            Criteria criteria = session.createCriteria(Student.class);
+            criteria.add(Restrictions.eq("email", studentRow.getEmail()));
+            Student student = (Student)criteria.uniqueResult();
+
+            student.setEmail(studentRow.getEmail());
+            student.setFirstName(studentRow.getFirstName());
+            student.setPassword(studentRow.getPassword());
+            student.setLastName(studentRow.getLastName());
+            student.setCountryCode(studentRow.getCountryCode());
+            student.setCountry(studentRow.getCountry());
+            student.setContact(studentRow.getContact());
+            student.setSchool(studentRow.getSchool());
+            student.setLanguage(studentRow.getLanguage());
+            student.setLecturerFirstName(studentRow.getLecturerFirstName());
+            student.setLecturerLastName(studentRow.getLecturerLastName());
+            student.setLecturerEmail(studentRow.getLecturerEmail());
+            student.setVerified(studentRow.getVerified());
+            student.setStatus(studentRow.getStatus());
+            student.setQuestions(studentRow.getQuestions());
+
+            session.update(student);
+            session.getTransaction().commit();
+
+            return true;
+        } catch (HibernateException e) {
+            log("Profile update failed", e);
+            return false;
+        }
+        finally {
             session.close();
         }
     }

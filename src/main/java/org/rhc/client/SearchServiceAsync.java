@@ -16,4 +16,7 @@ import java.util.List;
 public interface SearchServiceAsync {
     void loadDB(String search, String field, AsyncCallback<List<Student>> async);
     void displayDB(AsyncCallback<List<Student>> async);
+    void updateProfileData(Student studentRow, AsyncCallback<Boolean> async);
+    void updateEmail(String email, String newEmail, AsyncCallback<Boolean> async);
+
 }

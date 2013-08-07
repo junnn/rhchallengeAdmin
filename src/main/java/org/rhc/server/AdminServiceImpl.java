@@ -263,7 +263,4 @@ public class AdminServiceImpl extends RemoteServiceServlet implements AdminServi
             return false;
         }
     }
-
-
-
 }
