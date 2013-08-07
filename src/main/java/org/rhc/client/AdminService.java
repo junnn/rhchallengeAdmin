@@ -27,8 +27,6 @@ public interface AdminService extends RemoteService {
 
     public boolean setConfirmationStatus(String email) throws IllegalArgumentException;
 
-    public boolean deleteStudent(String email) throws IllegalArgumentException;
-
     public String generateRandomPassword() throws IllegalArgumentException;
 
     public static class Util {

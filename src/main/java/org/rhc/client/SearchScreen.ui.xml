@@ -16,11 +16,10 @@
             <g:item value="8">Lecturer's First Name</g:item>
             <g:item value="9">Lecturer's Last Name</g:item>
             <g:item value="10">Lecturer's Email</g:item>
-            <g:item value="11">Verification Status</g:item>
-            <g:item value="12">Account Status</g:item>
         </g:ListBox>
-         <g:Button ui:field="searchButton" text="search"/><br/>
-
-        <g:ListBox ui:field="resultListBox"/><br/>
+        <g:Button ui:field="searchButton" text="Search"/><br/>
+        <g:Button ui:field="deleteButton" text="Delete"/><br/>
+        <g:Label ui:field="errorLabel1"/><br/>
+        <g:ListBox ui:field="resultListBox"/>
     </g:HTMLPanel>
 </ui:UiBinder>

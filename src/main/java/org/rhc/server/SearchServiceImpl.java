@@ -119,8 +119,36 @@ public class SearchServiceImpl extends RemoteServiceServlet implements SearchSer
             session.getTransaction().commit();
 
             return true;
-        } catch (HibernateException e) {
+        }
+        catch (HibernateException e) {
             log("Profile update failed", e);
+            return false;
+        }
+        finally {
+            session.close();
+        }
+    }
+
+    @Override
+    public boolean deleteStudent(List<String> email) throws IllegalArgumentException {
+
+        Session session = HibernateUtil.getSessionFactory().openSession();
+
+        try{
+            session.beginTransaction();
+            Criteria criteria = session.createCriteria(Student.class);
+            criteria.add(Restrictions.in("email", email));
+
+            for(Object s : criteria.list()) {
+                session.delete(s);
+            }
+
+                session.getTransaction().commit();
+
+            return true;
+        }
+        catch (HibernateException e){
+            log("Failed to delete user", e);
             return false;
         }
         finally {

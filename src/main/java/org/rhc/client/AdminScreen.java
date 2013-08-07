@@ -35,9 +35,7 @@ public class AdminScreen extends Composite {
     @UiField TextBox lecturerEmailField;
     @UiField ListBox languageField;
     @UiField Button createButton;
-    @UiField Button deleteButton;
     @UiField Label errorLabel;
-    @UiField Label errorLabel2;
     @UiField Label errorLabel3;
     @UiField CheckBox verifyUser;
     @UiField Button generatePasswordButton;
@@ -100,12 +98,6 @@ public class AdminScreen extends Composite {
             createStudent();
         }
     }
-
-    @UiHandler("deleteButton")
-    public void handleDeleteButtonClick(ClickEvent event) {
-        deleteStudent();
-    }
-
 
     private void createStudent() {
 
@@ -190,21 +182,6 @@ public class AdminScreen extends Composite {
             public void onSuccess(String s) {
                 passwordField.setText(s);
                 confirmPasswordField.setText(s);
-            }
-        });
-    }
-
-    private void deleteStudent() {
-        String email = "sdd432";
-        adminService = AdminService.Util.getInstance();
-        adminService.deleteStudent(email, new AsyncCallback<Boolean>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                errorLabel2.setText("An unexpected error has occurred, please try again later!");
-            }
-            @Override
-            public void onSuccess(Boolean result) {
-                errorLabel.setText("User Deleted Successfully!");
             }
         });
     }

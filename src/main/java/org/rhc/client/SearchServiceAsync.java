@@ -18,5 +18,6 @@ public interface SearchServiceAsync {
     void displayDB(AsyncCallback<List<Student>> async);
     void updateProfileData(Student studentRow, AsyncCallback<Boolean> async);
     void updateEmail(String email, String newEmail, AsyncCallback<Boolean> async);
+    void deleteStudent(List<String> email, AsyncCallback<Boolean> async);
 
 }

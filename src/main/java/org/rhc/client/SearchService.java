@@ -22,6 +22,8 @@ public interface SearchService extends RemoteService{
     public List<Student> displayDB() throws IllegalArgumentException;
     public Boolean updateProfileData(Student studentRow) throws IllegalArgumentException;
     public Boolean updateEmail(String email, String newEmail) throws IllegalArgumentException;
+    public boolean deleteStudent(List<String> email) throws IllegalArgumentException;
+
 
     public static class Util {
         private static final SearchServiceAsync Instance= (SearchServiceAsync) GWT.create(SearchService.class);

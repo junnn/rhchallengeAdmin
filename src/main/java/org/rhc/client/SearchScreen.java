@@ -51,7 +51,9 @@ public class SearchScreen extends Composite {
     @UiField CellTable<Student> cellTable = new CellTable<Student>(KEY_PROVIDER);
     private String search;
     private String field;
-    private List listOfEmail;
+    private List<String> listOfEmail = new ArrayList<String>();
+    @UiField Label errorLabel1;
+    @UiField Button deleteButton;
 
     private SearchServiceAsync searchService = null;
 
@@ -59,6 +61,7 @@ public class SearchScreen extends Composite {
         initWidget(UiBinder.createAndBindUi(this));
         initTable();
         displayDB();
+
     }
 
     public void initTable(){
@@ -80,8 +83,14 @@ public class SearchScreen extends Composite {
         checkColumn.setFieldUpdater(new FieldUpdater<Student, Boolean>() {
             @Override
             public void update(int i, Student student, Boolean aBoolean) {
-//                listOfEmail.add(student.getEmail());
-                resultListBox.addItem(student.getEmail().toString());
+                if(aBoolean ==true){
+                    listOfEmail.add(student.getEmail());
+                    //resultListBox.addItem(student.getEmail().toString());
+                }
+                else{
+                    listOfEmail.remove(student.getEmail());
+                }
+
             }
         });
         //End of getting email
@@ -613,13 +622,6 @@ public class SearchScreen extends Composite {
         if (field.equals("Lecturer's Email")){
             field = "lecturerEmail";
         }
-        if (field.equals("Verification Status")){
-            field = "verified";
-        }
-        if (field.equals("Account Status")){
-            field = "status";
-        }
-
 
         AsyncDataProvider<Student> provider = new AsyncDataProvider<Student>() {
             @Override
@@ -646,10 +648,27 @@ public class SearchScreen extends Composite {
     }
 
 
-//    @UiHandler("resultListBox")
-//    public void handleCleck(ClickEvent event){
-//        for (int i=0; i < listOfEmail.size(); i++){
-//            resultListBox.addItem(listOfEmail.get(i).toString());
-//        }
-//    }
+    private void deleteStudent(List<String> email) {
+
+        searchService = SearchService.Util.getInstance();
+        searchService.deleteStudent(email, new AsyncCallback<Boolean>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                errorLabel1.setText("An unexpected error has occurred, please try again later!");
+            }
+            @Override
+            public void onSuccess(Boolean result) {
+                errorLabel1.setText("User Deleted Successfully!");
+            }
+        });
+    }
+
+    @UiHandler("deleteButton")
+    public void handleDeleteButton(ClickEvent event){
+        deleteStudent(listOfEmail);
+        for (int i=0;i<listOfEmail.size();i++){
+            resultListBox.addItem(listOfEmail.get(i));
+        }
+
+    }
 }

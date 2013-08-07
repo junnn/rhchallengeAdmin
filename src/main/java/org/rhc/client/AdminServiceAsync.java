@@ -24,6 +24,5 @@ public interface AdminServiceAsync {
 
 
     void setConfirmationStatus(String email, AsyncCallback<Boolean> async);
-    void deleteStudent(String email, AsyncCallback<Boolean> async);
     void generateRandomPassword(AsyncCallback<String> async);
 }

@@ -142,28 +142,6 @@ public class AdminServiceImpl extends RemoteServiceServlet implements AdminServi
         }
     }
 
-    @Override
-    public boolean deleteStudent(String email) throws IllegalArgumentException {
-
-        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-        try{
-
-            session.beginTransaction();
-
-            Criteria criteria = session.createCriteria(Student.class);
-            criteria.add(Restrictions.eq("email", email));
-            Student student = (Student)criteria.uniqueResult();
-            session.delete(student);
-            session.getTransaction().commit();
-            return true;
-        }
-        catch (HibernateException e){
-            log("Failed to delete user", e);
-            return false;
-        }
-    }
-
-
     private Set<Integer> randomQuestions() {
         Random rand = new Random();
         int max;

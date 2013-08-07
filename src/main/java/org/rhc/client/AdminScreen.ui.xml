@@ -34,11 +34,9 @@
         <g:item value="2">Chinese (Simplified)</g:item>
         <g:item value="3">Chinese (Traditional)</g:item>
     </g:ListBox><br/>
-        <g:Button ui:field="createButton" text="Create"/><br/>
         Set Verified <g:CheckBox ui:field="verifyUser" /><br/>
-        <g:Button ui:field="deleteButton" text="Delete"/><br/>
+        <g:Button ui:field="createButton" text="Create"/><br/>
         <g:Label ui:field="errorLabel"/><br/>
-        <g:Label ui:field="errorLabel2"/><br/>
         <g:Label ui:field="errorLabel3"/><br/>
     </g:HTMLPanel>
 </ui:UiBinder>
